@@ -1,24 +1,26 @@
-import { log } from 'console';
-import dotenv from 'dotenv';
-import pg from 'pg';
+import { log } from "console";
+import dotenv from "dotenv";
+import { Sequelize } from "sequelize";
 
 // Load environment variables
 dotenv.config();
 
-const pool = new pg.Client({
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD, // Using password from environment variables
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
+const sequelize = new Sequelize({
   database: process.env.DB_NAME,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  host: process.env.DB_HOST,
+  dialect: 'postgres'
 });
 
-
-pool.connect()
-  .then(() => log('Database connected'))
-  .catch((err) => log('Database connection error:', err));
-
-export default {
-  query: (text, params) => pool.query(text, params),
-  pool:pool
+const testDbConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    log("DB connected Successfully");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
 };
+
+export default { sq: sequelize, testDbConnection };
