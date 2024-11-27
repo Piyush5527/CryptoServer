@@ -18,11 +18,8 @@ export default (sequelize, DataTypes) => {
       },
       fullname: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
         validate: {
-          notEmpty: {
-            msg: "Full name cannot be empty.",
-          },
           len: {
             args: [1, 100],
             msg: "Full name must be between 1 and 100 characters.",
@@ -31,11 +28,8 @@ export default (sequelize, DataTypes) => {
       },
       phone: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         validate: {
-          notEmpty: {
-            msg: "Phone number is required.",
-          },
           isNumeric: {
             msg: "Phone number must contain only numbers.",
           },
@@ -87,7 +81,7 @@ export default (sequelize, DataTypes) => {
       },
       aadhar_no: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         validate: {
           notEmpty: {
             msg: "Aadhar number is required.",

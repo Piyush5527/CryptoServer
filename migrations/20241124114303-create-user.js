@@ -11,11 +11,11 @@ module.exports = {
       },
       fullname: {
         type: Sequelize.STRING(100),
-        allowNull: false,
+        allowNull: true,
       },
       phone: {
         type: Sequelize.STRING(20),
-        allowNull: false,
+        allowNull: true,
         validate: {
           isNumeric: true,
         },
@@ -38,7 +38,7 @@ module.exports = {
       },
       aadhar_no: {
         type: Sequelize.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       unique_referral: {
         type: Sequelize.STRING,
