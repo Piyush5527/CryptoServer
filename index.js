@@ -12,7 +12,6 @@ import errorHandler from "./middleware/error-handler-middleware.js";
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(errorHandler);
 
 //routes
 app.use("/users", users);
@@ -20,3 +19,6 @@ app.use("/users", users);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+//Global Error Handler
+app.use(errorHandler);
