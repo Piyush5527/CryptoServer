@@ -3,5 +3,7 @@ export const messageEn = {
     ERROR: 'Error',
 
     USER_RESGISTRATION_SUCCESSFUL: 'User registration successful',
-    USER_RESGISTRATION_ERROR: 'Error in registering user'
+    USER_RESGISTRATION_ERROR: 'Error in registering user',
+
+    USER_LOGIN_SUCCESSFUL: 'User login successful',
 }

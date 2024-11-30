@@ -1,11 +1,16 @@
 import userRepository from "../repository/user-repository.js";
 import bcrypt from "bcrypt";
 import CustomError from "../utils/errors/CustomError.js";
+import jwtService from "./jwt-service.js";
+
 async function createUser({ email, password }) {
   const user = await userRepository.findUserByEmail(email);
   if (!user) {
     const hashedPassword = await hashPassword(password);
-    return await userRepository.createUser({ email, hashedPassword });
+    return await userRepository.createUser({
+      email: email,
+      password: hashedPassword,
+    });
   }
   return null;
 }
@@ -23,8 +28,8 @@ async function loginUser({ email, password }, next) {
   if (!user) {
     next(new CustomError("Invalid Username or Password", 401));
   } else {
-    if (bcrypt.compare(password, user.password)) {
-      return true;
+    if (await validatePassword(password, user.password)) {
+      return jwtService.generateToken(user.user_id );
     } else {
       next(new CustomError("Invalid Username or Password", 401));
     }

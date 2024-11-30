@@ -25,12 +25,19 @@ router.post(
   userLogin.loginValidation,
   userLogin.validateRequest,
   async (req, res, next) => {
-    userService.loginUser(req.body, next);
+    const token = await userService.loginUser(req.body, next);
+    return res.json({
+      success: true,
+      message: messageEn.USER_LOGIN_SUCCESSFUL,
+      token: token,
+      status: 200,
+    });
   }
 );
 
-router.get("/t", (req, res) => {
-  jwtService.generateToken(4);
+router.get("/t", jwtService.verifyToken, (req, res) => {
+  console.log(req.user_id);
+  console.log("hello");
 });
 
 export default router;
