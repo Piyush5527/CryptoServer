@@ -24,15 +24,14 @@ async function hashPassword(password) {
 }
 
 async function loginUser({ email, password }, next) {
-  const user = await userRepository.findUserByEmail(email);
-  if (!user) {
-    next(new CustomError("Invalid Username or Password", 401));
-  } else {
-    if (await validatePassword(password, user.password)) {
-      return jwtService.generateToken(user.user_id );
-    } else {
-      next(new CustomError("Invalid Username or Password", 401));
+  try {
+    const user = await userRepository.findUserByEmail(email);
+    if (!user || !(await validatePassword(password, user.password))) {
+      return next(new CustomError("Invalid Username or Password", 401));
     }
+    return jwtService.generateToken(user.user_id);
+  } catch (err) {
+    return next(err);
   }
 }
 

@@ -14,7 +14,11 @@ router.post(
   async (req, res, next) => {
     const response = await userService.createUser(req.body);
     if (response) {
-      return res.json("user registered successfully");
+      return res.status(201).json({
+        success: true,
+        message: messageEn.USER_RESGISTRATION_SUCCESSFUL,
+        status: 201,
+      });
     }
     next(new CustomError(messageEn.USER_RESGISTRATION_ERROR, 500));
   }
@@ -26,6 +30,9 @@ router.post(
   userLogin.validateRequest,
   async (req, res, next) => {
     const token = await userService.loginUser(req.body, next);
+    if (!token) {
+      return;
+    }
     return res.json({
       success: true,
       message: messageEn.USER_LOGIN_SUCCESSFUL,
@@ -35,9 +42,8 @@ router.post(
   }
 );
 
-router.get("/t", jwtService.verifyToken, (req, res) => {
-  console.log(req.user_id);
-  console.log("hello");
+router.get("/t", (req, res) => {
+  return res.json("test");
 });
 
 export default router;
