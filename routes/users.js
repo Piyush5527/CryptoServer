@@ -42,6 +42,21 @@ router.post(
   }
 );
 
+router.patch("/details", jwtService.verifyToken, (req, res, next) => {
+  userService
+    .updateUserDetails(req)
+    .then((data) => {
+      res.json({
+        success: true,
+        message: messageEn.USER_UPDATE_SUCCESSFUL,
+        status: 200,
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 router.get("/t", (req, res) => {
   return res.json("test");
 });

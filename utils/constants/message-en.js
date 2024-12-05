@@ -6,4 +6,6 @@ export const messageEn = {
     USER_RESGISTRATION_ERROR: 'Error in registering user',
 
     USER_LOGIN_SUCCESSFUL: 'User login successful',
+
+    USER_UPDATE_SUCCESSFUL: 'User update successful',
 }

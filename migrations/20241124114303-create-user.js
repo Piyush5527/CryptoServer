@@ -45,6 +45,12 @@ module.exports = {
         unique: true,
         allowNull: true,
       },
+      role: {
+        type: Sequelize.ENUM("ADMIN", "USER"),
+        unique: false,
+        allowNull: false,
+        defaultValue:"ADMIN"
+      },
       referred_by: {
         type: Sequelize.BIGINT,
         allowNull: true,

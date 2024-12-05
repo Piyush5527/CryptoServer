@@ -35,4 +35,11 @@ async function loginUser({ email, password }, next) {
   }
 }
 
-export default { createUser, loginUser };
+async function updateUserDetails(req){
+  const user = await userRepository.findUserById(req.user_id);
+  if(user){
+    return await userRepository.updateUser(user.user_id, req.body);
+  }
+}
+
+export default { createUser, loginUser, updateUserDetails };
