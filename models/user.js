@@ -103,6 +103,12 @@ export default (sequelize, DataTypes) => {
           },
         },
       },
+      role: {
+        type: DataTypes.STRING(10),
+        unique: false,
+        allowNull: false,
+        defaultValue: "USER",
+      },
       referred_by: {
         type: DataTypes.BIGINT,
         allowNull: true,
