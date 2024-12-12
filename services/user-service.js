@@ -2,17 +2,30 @@ import userRepository from "../repository/user-repository.js";
 import bcrypt from "bcrypt";
 import CustomError from "../utils/errors/CustomError.js";
 import jwtService from "./jwt-service.js";
+import crypto from "crypto";
+import { log } from "console";
 
-async function createUser({ email, password }) {
+async function createUser({ email, password, referralCode }) {
   const user = await userRepository.findUserByEmail(email);
+  var referredBy = null;
+  if (referralCode) {
+    referredBy = await userRepository.findUserByReferral(referralCode);
+  }
   if (!user) {
     const hashedPassword = await hashPassword(password);
+    log(referredBy[0]?.user_id)
     return await userRepository.createUser({
       email: email,
       password: hashedPassword,
+      unique_referral: createUniqueReferralCode(),
+      referred_by: referredBy ? referredBy[0]?.user_id : null,
     });
   }
   return null;
+}
+
+function createUniqueReferralCode() {
+  return crypto.randomBytes(12).toString("hex");
 }
 
 async function validatePassword(password, hashedPassword) {
@@ -35,11 +48,15 @@ async function loginUser({ email, password }, next) {
   }
 }
 
-async function updateUserDetails(req){
+async function updateUserDetails(req) {
   const user = await userRepository.findUserById(req.user_id);
-  if(user){
+  if (user) {
     return await userRepository.updateUser(user.user_id, req.body);
   }
 }
 
-export default { createUser, loginUser, updateUserDetails };
+async function t(){
+  return await userRepository.findReferredUsers(5);
+}
+
+export default { createUser, loginUser, updateUserDetails, t };
