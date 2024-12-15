@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Images", {
-      id: {
+      image_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
       },
       user_id: {
-        type: Sequelize,
+        type: Sequelize.BIGINT,
         allowNull: false,
         references: {
           model: "Users", // Reference table name

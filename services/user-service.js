@@ -13,7 +13,6 @@ async function createUser({ email, password, referralCode }) {
   }
   if (!user) {
     const hashedPassword = await hashPassword(password);
-    log(referredBy[0]?.user_id)
     return await userRepository.createUser({
       email: email,
       password: hashedPassword,
