@@ -16,7 +16,7 @@ router.post("/initiate-deposit", jwtService.verifyToken, async (req, res) => {
 });
 
 router.post("/verify-deposit", jwtService.verifyToken, async (req, res) => {
-  await depositService.updateTransactionStatus(req.body.razorpay_order_id, req.body.success)
+  await depositService.updateTransactionStatus(req.body,req.user_id)
   return baseRoute.successResponseWithoutData(res, messageEn.SUCCESS)
 })
 

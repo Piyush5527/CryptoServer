@@ -10,6 +10,7 @@ import deposit from "./routes/deposit.js";
 import errorHandler from "./middleware/error-handler-middleware.js";
 import cors from "cors";
 import corsOption from "./config/cors-config.js";
+import wallet from "./routes/wallet.js";
 
 //middleware
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use(cors(corsOption));
 app.use("/users", users);
 app.use("/referrals", referral);
 app.use("/deposit", deposit);
+app.use("/wallet", wallet);
 
 //Global Error Handler
 app.use(errorHandler);

@@ -14,4 +14,8 @@ function updateTransaction(transaction) {
     return models.Transactions.update(transaction, {where: {razorpay_order_id: transaction.razorpay_order_id}})
 }
 
-export default {createTransaction, updateTransaction};
+function getTransactionByOrderId(orderId) {
+    return models.Transactions.findOne({where: {razorpay_order_id: orderId}})
+}
+
+export default {createTransaction, updateTransaction, getTransactionByOrderId};

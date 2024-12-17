@@ -4,8 +4,12 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Wallet extends Model {
     static associate(models) {
-      // Associations
-      Wallet.belongsTo(models.Currency, { foreignKey: 'currency_id' });
+      // Wallet belongs to Currency
+
+      Wallet.belongsTo(models.Currency, {
+        foreignKey: 'currency_id',
+        as: 'currency'
+      });
     }
   }
 
@@ -24,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       references: {
         model: 'Currencies',
-        key: 'id'
+        key: 'currency_id'
       }
     },
     balance: {
@@ -35,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Wallet',
-    tableName: 'Wallets',
+    tableName: 'Wallets', // Table name
     underscored: true, // Allows snake_case for timestamps (created_at, updated_at)
     timestamps: true
   });

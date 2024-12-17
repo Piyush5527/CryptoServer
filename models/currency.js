@@ -4,7 +4,11 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Currency extends Model {
     static associate(models) {
-      // Define associations if needed (like linking to Wallet or Ledger)
+      // Currency has many Wallets
+      Currency.hasMany(models.Wallet, {
+        foreignKey: 'currency_id', // Foreign key in Wallet table
+        as: 'wallets', // Alias for the association (plural, since hasMany)
+      });
     }
   }
 
@@ -37,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Currency',
-    tableName: 'Currencies',
+    tableName: 'Currencies', // This must match the table name used in the references
     underscored: true, // Allows snake_case for timestamps (created_at, updated_at)
     timestamps: true
   });
