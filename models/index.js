@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Sequelize } from "sequelize";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import process from "process";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,8 +10,11 @@ const __dirname = path.dirname(__filename);
 const basename = path.basename(__filename);
 const configPath = path.resolve(__dirname, "../config/config.json");
 const configData = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-const config = configData[process.env.NODE_ENV || "development"];
+const env = process.env.NODE_ENV || "development";
 
+console.log(`Running in environment: ${env}`);
+
+const config = configData[env];
 const db = {};
 let sequelize;
 
@@ -22,32 +25,37 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-// Dynamically load models
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 &&
-      file !== basename &&
-      file.slice(-3) === ".js" &&
-      file.indexOf(".test.js") === -1
-    );
-  })
-  .forEach(async (file) => {
-    const modelPath = path.join("file:",__dirname, file);
-    const model = await import(modelPath); // Dynamically import the model
-    const modelInstance = model.default(sequelize, Sequelize.DataTypes); // Invoke the model function
-    db[modelInstance.name] = modelInstance; // Add the model to db
+const initializeModels = async () => {
+  // Read all the model files in the directory except the current file
+  const files = fs.readdirSync(__dirname)
+      .filter(file =>
+          file.indexOf(".") !== 0 &&
+          file !== basename &&
+          file.slice(-3) === ".js" &&
+          file.indexOf(".test.js") === -1
+      );
+
+  // Dynamically import and initialize models
+  for (const file of files) {
+    const modelPath = pathToFileURL(path.join(__dirname, file)).href;
+    const modelModule = await import(modelPath);
+    const model = modelModule.default || modelModule; // Handle `default` or `module.exports`
+    const modelInstance = model(sequelize, Sequelize.DataTypes);
+    db[modelInstance.name] = modelInstance;
+  }
+
+  // Set up associations between models
+  Object.keys(db).forEach((modelName) => {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
   });
 
-// Set associations if defined
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+  // Attach Sequelize instance and Sequelize library to db object
+  db.sequelize = sequelize;
+  db.Sequelize = Sequelize;
+};
 
-// Add sequelize and Sequelize to db object
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+await initializeModels();
 
-export default db;
+export default db; // Export at the **top level**

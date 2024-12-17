@@ -11,7 +11,7 @@ export default (sequelize, DataTypes) => {
 
   Image.init(
     {
-      id: {
+      image_id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true,

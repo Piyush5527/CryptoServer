@@ -1,31 +1,31 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Images", {
-      image_id: {
+    await queryInterface.createTable("AppParams", {
+      param_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.BIGINT,
       },
-      image_name: {
+      param_name: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      param_desc: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      param_value: {
         type: Sequelize.STRING(255),
         allowNull: false,
-      },
-      image_type: {
-        type: Sequelize.ENUM("PROOF", "PROFILE"),
-        allowNull: false,
-      },
-      user_id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-        references: {
-          model: "Users", // Reference table name
-          key: "user_id", // Reference primary key
+        validate: {
+          notEmpty: true,
         },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +39,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Images");
+    await queryInterface.dropTable("AppParams");
   },
 };
